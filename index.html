@@ -57,6 +57,13 @@ h1{font-size:clamp(3.2rem,7.8vw,7.4rem);line-height:.88;letter-spacing:-.055em;m
 .rune{position:absolute;font-size:2.3rem;filter:drop-shadow(0 0 12px rgba(245,200,91,.35))}
 .r1{left:10%;top:13%}.r2{left:70%;top:39%}.r3{left:64%;top:70%}
 .goal{position:absolute;right:8%;bottom:9%;padding:9px 12px;border:1px solid var(--lime);color:var(--lime);border-radius:10px;font-weight:900}
+.trig-cover{min-height:430px}
+#trigCoverCanvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.cover-badge{
+  position:absolute;left:7%;top:7%;padding:8px 12px;border:1px solid rgba(245,200,91,.55);
+  border-radius:999px;background:rgba(5,6,17,.76);color:var(--gold);font-size:.7rem;
+  font-weight:950;letter-spacing:.18em;box-shadow:0 0 22px rgba(245,200,91,.12)
+}
 
 .game-grid{display:grid;grid-template-columns:300px minmax(0,1fr);gap:22px;align-items:start}
 .sidebar{
@@ -371,15 +378,14 @@ body::before{
     <h1>ESCAPE<br>THE LABYRINTH</h1>
     <p>
       Choose your challenges. Earn Aura Points. Collect magical items. Unlock each gate.
-      Reach at least <strong>270 Max Aura Points</strong>, complete the three location trials,
+      Reach at least <strong>270 Aura Points</strong>, complete the three location trials,
       and decipher the final sound-wave lock to escape Trigonovia.
     </p>
     <button class="start" id="startBtn">ENTER THE MAZE →</button>
   </div>
-  <div class="maze">
-    <div class="path p1"></div><div class="path p2"></div><div class="path p3"></div>
-    <div class="rune r1">△</div><div class="rune r2">∿</div><div class="rune r3">π</div>
-    <div class="goal">FINAL DOOR</div>
+  <div class="maze trig-cover">
+    <canvas id="trigCoverCanvas" aria-label="An enchanted labyrinth built from trigonometric symbols, a glowing unit circle, waves, and a final door"></canvas>
+    <div class="cover-badge">ENTER THE LABYRINTH... IF YOU DARE</div>
   </div>
 </section>
 
@@ -697,7 +703,122 @@ body::before{
 
 <script>
 
+
 const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+
+function drawTrigCover(){
+  const c=document.getElementById("trigCoverCanvas");
+  if(!c)return;
+  const r=c.getBoundingClientRect(),dpr=window.devicePixelRatio||1;
+  c.width=Math.max(1,Math.round(r.width*dpr));c.height=Math.max(1,Math.round(r.height*dpr));
+  const x=c.getContext("2d");x.setTransform(dpr,0,0,dpr,0,0);
+  const w=r.width,h=r.height,cx=w*.5,cy=h*.49;
+
+  // Midnight magical atmosphere
+  let g=x.createRadialGradient(cx,cy,5,cx,cy,w*.72);
+  g.addColorStop(0,"#251a55");g.addColorStop(.38,"#100d2b");g.addColorStop(1,"#02040b");
+  x.fillStyle=g;x.fillRect(0,0,w,h);
+
+  // Mist
+  for(let i=0;i<5;i++){
+    let mg=x.createRadialGradient(w*(.15+i*.18),h*(.25+(i%2)*.42),0,w*(.15+i*.18),h*(.25+(i%2)*.42),w*.22);
+    mg.addColorStop(0,i%2?"rgba(93,226,239,.07)":"rgba(154,134,255,.10)");
+    mg.addColorStop(1,"rgba(0,0,0,0)");x.fillStyle=mg;x.fillRect(0,0,w,h);
+  }
+
+  // Floating stars / sparks
+  const stars=[[.08,.18],[.15,.36],[.12,.72],[.24,.12],[.29,.82],[.39,.20],[.44,.74],[.58,.13],[.63,.83],[.72,.23],[.82,.12],[.91,.34],[.88,.70],[.75,.66]];
+  stars.forEach(([px,py],i)=>{
+    x.save();x.translate(w*px,h*py);x.rotate(i*.41);
+    x.fillStyle=i%3===0?"rgba(245,200,91,.9)":"rgba(210,196,255,.75)";
+    x.shadowBlur=12;x.shadowColor=x.fillStyle;
+    x.font=`${i%4===0?20:12}px serif`;x.textAlign="center";x.fillText(i%2?"✦":"✧",0,0);x.restore();
+  });
+  x.shadowBlur=0;
+
+  // Ancient stone doorway / portal
+  const pw=w*.42,ph=h*.68,px=cx-pw/2,py=h*.16;
+  x.strokeStyle="#463968";x.lineWidth=14;x.lineCap="round";
+  x.beginPath();x.moveTo(px,py+ph);x.lineTo(px,py+pw*.38);
+  x.bezierCurveTo(px,py,px+pw,py,px+pw,py+pw*.38);
+  x.lineTo(px+pw,py+ph);x.stroke();
+  x.strokeStyle="rgba(245,200,91,.32)";x.lineWidth=2;
+  x.beginPath();x.moveTo(px+7,py+ph);x.lineTo(px+7,py+pw*.38);
+  x.bezierCurveTo(px+7,py+8,px+pw-7,py+8,px+pw-7,py+pw*.38);
+  x.lineTo(px+pw-7,py+ph);x.stroke();
+
+  // Swirling magical portal
+  for(let j=0;j<8;j++){
+    x.save();x.translate(cx,cy);x.rotate(j*Math.PI/4);
+    x.strokeStyle=j%2?"rgba(93,226,239,.25)":"rgba(154,134,255,.32)";
+    x.lineWidth=2;x.beginPath();
+    for(let t=0;t<90;t++){
+      let a=t*.075, rr=10+t*1.25;
+      let xx=Math.cos(a)*rr,yy=Math.sin(a)*rr*.72;
+      t?x.lineTo(xx,yy):x.moveTo(xx,yy);
+    }
+    x.stroke();x.restore();
+  }
+
+  // Central arcane sigil: unit-circle inspired, but reads as magic first
+  const rad=Math.min(w,h)*.19;
+  x.shadowBlur=24;x.shadowColor="rgba(245,200,91,.55)";
+  x.strokeStyle="#f5c85b";x.lineWidth=2.5;x.beginPath();x.arc(cx,cy,rad,0,Math.PI*2);x.stroke();
+  x.strokeStyle="rgba(154,134,255,.8)";x.beginPath();x.arc(cx,cy,rad*.76,0,Math.PI*2);x.stroke();
+  x.shadowBlur=0;
+
+  // Eight-point spell geometry
+  x.strokeStyle="rgba(93,226,239,.7)";x.lineWidth=1.5;x.beginPath();
+  for(let i=0;i<8;i++){
+    const a=-Math.PI/2+i*Math.PI/4;
+    const xx=cx+Math.cos(a)*rad,yy=cy+Math.sin(a)*rad;
+    if(i===0)x.moveTo(xx,yy);else x.lineTo(xx,yy);
+    const a2=a+3*Math.PI/4;
+    x.lineTo(cx+Math.cos(a2)*rad,cy+Math.sin(a2)*rad);
+  }
+  x.closePath();x.stroke();
+
+  // Trig runes around the spell circle
+  const runes=[["sin",-.5,-.82],["cos",.5,-.82],["π",-1.03,.05],["θ",1.03,.05],["tan",-.52,.9],["sec",.52,.9]];
+  x.font="italic 14px Georgia";x.textAlign="center";
+  runes.forEach(([t,dx,dy],i)=>{
+    x.fillStyle=i%2?"#c8bbff":"#76edf4";
+    x.shadowBlur=10;x.shadowColor=x.fillStyle;
+    x.fillText(t,cx+dx*rad,cy+dy*rad);
+  });x.shadowBlur=0;
+
+  // Magic crystal hovering at center
+  x.save();x.translate(cx,cy);
+  x.shadowBlur=28;x.shadowColor="rgba(185,239,114,.75)";
+  x.fillStyle="rgba(185,239,114,.18)";x.strokeStyle="#b9ef72";x.lineWidth=2;
+  x.beginPath();x.moveTo(0,-32);x.lineTo(20,-7);x.lineTo(11,29);x.lineTo(0,39);x.lineTo(-11,29);x.lineTo(-20,-7);x.closePath();x.fill();x.stroke();
+  x.beginPath();x.moveTo(-20,-7);x.lineTo(20,-7);x.moveTo(0,-32);x.lineTo(0,39);x.stroke();
+  x.restore();x.shadowBlur=0;
+
+  // Floating spellbook
+  x.save();x.translate(w*.16,h*.63);x.rotate(-.10);
+  x.shadowBlur=18;x.shadowColor="rgba(154,134,255,.35)";
+  x.fillStyle="#19143b";x.strokeStyle="#9a86ff";x.lineWidth=2;
+  x.beginPath();x.moveTo(-50,-28);x.quadraticCurveTo(-24,-38,0,-23);x.quadraticCurveTo(24,-38,50,-28);
+  x.lineTo(47,28);x.quadraticCurveTo(22,18,0,31);x.quadraticCurveTo(-22,18,-47,28);x.closePath();x.fill();x.stroke();
+  x.strokeStyle="#6e61b9";x.beginPath();x.moveTo(0,-23);x.lineTo(0,31);x.stroke();
+  x.fillStyle="#f5c85b";x.font="italic 15px Georgia";x.textAlign="center";x.fillText("sin²θ", -25,0);x.fillText("+ cos²θ",25,2);
+  x.restore();x.shadowBlur=0;
+
+  // Magic wand casting toward portal
+  x.save();x.translate(w*.82,h*.67);x.rotate(-.55);
+  x.strokeStyle="#a77b49";x.lineWidth=6;x.lineCap="round";x.beginPath();x.moveTo(0,35);x.lineTo(0,-35);x.stroke();
+  x.fillStyle="#5de2ef";x.shadowBlur=24;x.shadowColor="#5de2ef";x.font="26px serif";x.textAlign="center";x.fillText("✦",0,-45);
+  x.restore();x.shadowBlur=0;
+
+  // Floor rune / path to the door
+  x.strokeStyle="rgba(245,200,91,.30)";x.lineWidth=2;
+  x.beginPath();x.moveTo(w*.31,h*.93);x.quadraticCurveTo(cx,h*.80,w*.69,h*.93);x.stroke();
+  x.fillStyle="rgba(245,200,91,.72)";x.font="bold 12px Georgia";x.textAlign="center";
+  x.fillText("ONLY THE IDENTITIES OPEN THE WAY",cx,h*.94);
+}
+window.addEventListener("resize",drawTrigCover);
+window.addEventListener("load",drawTrigCover);
 
 let aura=0;
 const completed=new Set();
