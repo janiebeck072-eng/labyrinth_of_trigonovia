@@ -126,6 +126,234 @@ h1{font-size:clamp(3.2rem,7.8vw,7.4rem);line-height:.88;letter-spacing:-.055em;m
 .reflection textarea{width:100%;min-height:125px;padding:12px;border-radius:10px;background:#07131c;border:1px solid var(--line);color:var(--ink);resize:vertical}
 @media(max-width:980px){.hero,.game-grid{grid-template-columns:1fr}.sidebar{position:relative;top:auto}}
 @media(max-width:760px){.challenge-grid{grid-template-columns:1fr}.topbar{grid-template-columns:1fr auto}.topbar .stat:nth-child(3){display:none}}
+
+.challenge.failed{
+  border-color:#71343d;
+  background:#1b1116;
+  opacity:.78;
+}
+.challenge.failed .choice,
+.challenge.failed .proofCheck,
+.challenge.failed .hintBtn{
+  pointer-events:none;
+  opacity:.45;
+}
+.lock-stamp{
+  display:none;
+  margin-top:10px;
+  color:var(--danger);
+  font-size:.82rem;
+  font-weight:900;
+  letter-spacing:.06em;
+}
+.challenge.failed .lock-stamp{display:block}
+.grade-panel{
+  margin-top:18px;
+  border:2px solid var(--gold);
+  border-radius:20px;
+  padding:20px;
+  background:#17150d;
+  display:none;
+}
+.grade-panel.show{display:block}
+.grade-number{
+  font-size:clamp(3rem,8vw,5.5rem);
+  font-weight:950;
+  color:var(--lime);
+  line-height:1;
+  margin:8px 0;
+}
+.grade-breakdown{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-top:14px;
+}
+.grade-stat{
+  padding:12px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#0b151e;
+  text-align:center;
+}
+.grade-stat strong{
+  display:block;
+  color:var(--gold);
+  font-size:1.35rem;
+}
+@media(max-width:700px){
+  .grade-breakdown{grid-template-columns:1fr}
+}
+
+
+/* --- Arcane visual layer --- */
+body{
+  background:
+    radial-gradient(circle at 12% 8%,rgba(122,86,255,.22),transparent 24%),
+    radial-gradient(circle at 88% 15%,rgba(0,225,255,.14),transparent 25%),
+    radial-gradient(circle at 50% 80%,rgba(255,196,76,.08),transparent 30%),
+    linear-gradient(180deg,#050611,#090b1b 45%,#03050c);
+}
+body::before{
+  content:"✦   ☾   △   π   ✧   ∿   ✦   sec   cos   sin   ☽";
+  position:fixed;inset:0;
+  color:rgba(189,167,255,.055);
+  font-size:clamp(1.3rem,3vw,2.8rem);
+  letter-spacing:2.2rem;
+  line-height:5rem;
+  transform:rotate(-8deg) scale(1.2);
+  pointer-events:none;
+  z-index:0;
+}
+.shell{position:relative;z-index:1}
+.topbar{
+  border-color:#4b3f74;
+  background:rgba(16,12,34,.91);
+  box-shadow:0 0 30px rgba(118,88,255,.12), inset 0 0 20px rgba(255,255,255,.02)
+}
+.brand span{color:#f8cf66;text-shadow:0 0 12px rgba(248,207,102,.35)}
+.maze{
+  background:
+    radial-gradient(circle at 50% 50%,rgba(103,80,205,.14),transparent 32%),
+    #040611;
+  box-shadow:inset 0 0 70px rgba(87,62,170,.17),0 18px 55px rgba(0,0,0,.3)
+}
+.location{
+  background:
+    linear-gradient(rgba(13,20,38,.94),rgba(13,20,38,.94)),
+    radial-gradient(circle at top right,rgba(155,128,255,.18),transparent 35%);
+  border-color:#3c365d;
+  box-shadow:0 15px 45px rgba(0,0,0,.18)
+}
+.challenge{
+  background:
+    radial-gradient(circle at 90% 8%,rgba(246,200,91,.055),transparent 25%),
+    #0a1221;
+  border-color:#343457;
+}
+.challenge::before{
+  content:"✧";
+  position:absolute;left:12px;top:10px;color:rgba(246,200,91,.25);font-size:1.15rem
+}
+.challenge h3{padding-left:16px}
+.challenge.completed{
+  box-shadow:0 0 24px rgba(117,224,165,.08), inset 0 0 18px rgba(117,224,165,.04)
+}
+.final-gate,.final-escape{
+  background:
+    radial-gradient(circle at 50% 0%,rgba(246,200,91,.12),transparent 35%),
+    #14120c;
+  box-shadow:inset 0 0 26px rgba(246,200,91,.04)
+}
+.inventory{grid-template-columns:repeat(2,1fr)}
+.item{
+  position:relative;transition:.2s ease;
+  background:linear-gradient(145deg,#0b1020,#10172a);
+  border-color:#3a4166
+}
+.item.owned{
+  transform:translateY(-2px);
+  box-shadow:0 0 18px rgba(246,200,91,.13)
+}
+.item-count{
+  position:absolute;right:6px;top:5px;
+  min-width:21px;height:21px;padding:0 5px;border-radius:999px;
+  background:#f5c85b;color:#21190a;font-weight:950;font-size:.7rem;
+  display:grid;place-items:center
+}
+.item-desc{font-size:.62rem;color:#8d9baa;margin-top:4px;line-height:1.25}
+.choice.selected{
+  outline:2px solid var(--violet);
+  background:#17152b;
+  color:#d9d0ff
+}
+.choice.eliminated{
+  opacity:.22;
+  text-decoration:line-through;
+  pointer-events:none
+}
+.utility-bar{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:7px;
+  margin-top:12px;
+  padding-top:11px;
+  border-top:1px dashed #3a3a5b
+}
+.utility{
+  border:1px solid #494165;
+  border-radius:9px;
+  background:#111124;
+  color:#cfc7e8;
+  padding:8px 7px;
+  cursor:pointer;
+  font-size:.73rem;
+  font-weight:900
+}
+.utility:hover{border-color:#9a86ff;color:#fff}
+.utility:disabled{opacity:.28;cursor:not-allowed}
+.submit-answer{
+  margin-top:10px;
+  width:100%;
+  background:linear-gradient(180deg,#775ee0,#563dbb);
+  border:1px solid #a996ff;
+  color:#fff;
+  box-shadow:0 5px 0 #35277b
+}
+.item-toast{
+  position:fixed;right:22px;bottom:22px;z-index:80;
+  max-width:340px;padding:13px 16px;border:1px solid #7c6bb9;
+  border-radius:14px;background:rgba(20,16,40,.96);color:#efeaff;
+  box-shadow:0 15px 40px rgba(0,0,0,.35);
+  opacity:0;transform:translateY(12px);pointer-events:none;transition:.25s
+}
+.item-toast.show{opacity:1;transform:translateY(0)}
+.final-reflection{
+  margin-top:18px;
+  border:1px solid #5c4e83;
+  border-radius:20px;padding:20px;
+  background:
+    radial-gradient(circle at top left,rgba(154,134,255,.13),transparent 30%),
+    #111126
+}
+.knowledge-only{
+  padding:10px 12px;
+  border-left:4px solid #f5c85b;
+  background:#17150c;
+  color:#c9bd91;
+  border-radius:9px;
+  margin:12px 0
+}
+@media(max-width:700px){.utility-bar{grid-template-columns:1fr}}
+
+
+.open-reflection-stage{
+  display:none;
+  margin-top:18px;
+  padding:18px;
+  border:1px solid #6f60a1;
+  border-radius:16px;
+  background:rgba(13,11,30,.72);
+}
+.open-reflection-stage.show{display:block}
+.open-reflection-stage textarea{
+  width:100%;
+  min-height:145px;
+  margin-top:10px;
+  padding:13px;
+  border:1px solid #514873;
+  border-radius:12px;
+  background:#080b18;
+  color:var(--ink);
+  resize:vertical;
+  line-height:1.55;
+}
+.reflection-sealed{
+  margin-top:10px;
+  color:var(--good);
+  font-weight:850;
+}
+
 </style>
 </head>
 <body>
@@ -133,7 +361,7 @@ h1{font-size:clamp(3.2rem,7.8vw,7.4rem);line-height:.88;letter-spacing:-.055em;m
 
 <div class="topbar">
   <div class="brand">THE LABYRINTH OF <span>TRIGONOVIA</span></div>
-  <div class="stat">Aura <b id="auraTop">0</b>/80</div>
+  <div class="stat">Aura <b id="auraTop">0</b>/270</div>
   <div class="stat">Knowledge <b id="knowledgeTop">0</b>/3</div>
 </div>
 
@@ -143,7 +371,7 @@ h1{font-size:clamp(3.2rem,7.8vw,7.4rem);line-height:.88;letter-spacing:-.055em;m
     <h1>ESCAPE<br>THE LABYRINTH</h1>
     <p>
       Choose your challenges. Earn Aura Points. Collect magical items. Unlock each gate.
-      Reach at least <strong>80 Aura Points</strong>, complete the three location trials,
+      Reach at least <strong>270 Max Aura Points</strong>, complete the three location trials,
       and decipher the final sound-wave lock to escape Trigonovia.
     </p>
     <button class="start" id="startBtn">ENTER THE MAZE →</button>
@@ -158,7 +386,7 @@ h1{font-size:clamp(3.2rem,7.8vw,7.4rem);line-height:.88;letter-spacing:-.055em;m
 <section class="game-grid" id="game">
 <aside class="sidebar">
   <h2>Adventurer Log</h2>
-  <p>Mix and match challenges. You do not need every problem—but the maze rewards strategic choices.</p>
+  <p>Every scored challenge matters. A perfect grade requires all 270 available Aura Points.</p>
   <div class="aura-track"><div id="auraBar"></div></div>
   <button class="nav-btn active" data-target="outer">01 • Outer Gates</button>
   <button class="nav-btn" data-target="inner">02 • Inner Sanctum</button>
@@ -167,10 +395,10 @@ h1{font-size:clamp(3.2rem,7.8vw,7.4rem);line-height:.88;letter-spacing:-.055em;m
 
   <div class="kicker" style="margin-top:18px">INVENTORY</div>
   <div class="inventory">
-    <div class="item" id="invC"><div class="icon">🔮</div>Clarity</div>
-    <div class="item" id="invK"><div class="icon">📜</div>Knowledge</div>
-    <div class="item" id="invI"><div class="icon">💡</div>Insight</div>
-    <div class="item" id="invR"><div class="icon">🪞</div>Reflection</div>
+    <div class="item" id="invC"><span class="item-count" id="countC">0</span><div class="icon">🔮</div>Clarity<div class="item-desc">eliminate 2 wrong answers</div></div>
+    <div class="item" id="invK"><span class="item-count" id="countK">0</span><div class="icon">📜</div>Knowledge<div class="item-desc">reserved for final reflection</div></div>
+    <div class="item" id="invI"><span class="item-count" id="countI">0</span><div class="icon">💡</div>Insight<div class="item-desc">reveal a hint</div></div>
+    <div class="item" id="invR"><span class="item-count" id="countR">0</span><div class="icon">🪞</div>Reflection<div class="item-desc">check safely before submitting</div></div>
   </div>
 </aside>
 
@@ -191,7 +419,7 @@ h1{font-size:clamp(3.2rem,7.8vw,7.4rem);line-height:.88;letter-spacing:-.055em;m
         <button class="choice" data-answer="wrong">2</button>
       </div>
       <button class="action hintBtn">USE INSIGHT</button>
-      <div class="hint">Recall the Pythagorean Identity.</div><div class="feedback"></div>
+      <div class="hint">Recall the Pythagorean Identity.</div><div class="lock-stamp">LOCKED — points forfeited for this challenge.</div><div class="feedback"></div>
     </article>
 
     <article class="challenge" data-id="1.2" data-points="5" data-item="K">
@@ -201,7 +429,7 @@ h1{font-size:clamp(3.2rem,7.8vw,7.4rem);line-height:.88;letter-spacing:-.055em;m
         <button class="choice" data-answer="correct">sec = 1/cos, csc = 1/sin</button>
         <button class="choice" data-answer="wrong">sec = 1/sin, csc = 1/cos</button>
       </div>
-      <button class="action hintBtn">USE INSIGHT</button><div class="hint">Their names tell you which reciprocal identity family to use.</div><div class="feedback"></div>
+      <button class="action hintBtn">USE INSIGHT</button><div class="hint">Their names tell you which reciprocal identity family to use.</div><div class="lock-stamp">LOCKED — points forfeited for this challenge.</div><div class="feedback"></div>
     </article>
 
     <article class="challenge" data-id="1.3" data-points="10" data-item="I">
@@ -212,7 +440,7 @@ h1{font-size:clamp(3.2rem,7.8vw,7.4rem);line-height:.88;letter-spacing:-.055em;m
         <button class="choice" data-answer="correct">1</button>
         <button class="choice" data-answer="wrong">sin(x)cos(x)</button>
       </div>
-      <button class="action hintBtn">USE INSIGHT</button><div class="hint">tan and cot are reciprocals.</div><div class="feedback"></div>
+      <button class="action hintBtn">USE INSIGHT</button><div class="hint">tan and cot are reciprocals.</div><div class="lock-stamp">LOCKED — points forfeited for this challenge.</div><div class="feedback"></div>
     </article>
 
     <article class="challenge" data-id="1.4" data-points="10" data-item="R">
@@ -223,17 +451,22 @@ h1{font-size:clamp(3.2rem,7.8vw,7.4rem);line-height:.88;letter-spacing:-.055em;m
         <button class="choice" data-answer="wrong">tan(x)</button>
         <button class="choice" data-answer="wrong">1</button>
       </div>
-      <button class="action hintBtn">USE INSIGHT</button><div class="hint">cos and sec are even; tan is odd.</div><div class="feedback"></div>
+      <button class="action hintBtn">USE INSIGHT</button><div class="hint">cos and sec are even; tan is odd.</div><div class="lock-stamp">LOCKED — points forfeited for this challenge.</div><div class="feedback"></div>
     </article>
 
   </div>
 
-  <div class="final-gate" id="outerGate">
-    <div class="kicker">LOCATION TRIAL</div>
+  <div class="final-gate scored-gate" id="outerGate" data-id="G1" data-points="10">
+    <div class="kicker">LOCATION TRIAL • +10 AURA</div>
     <h3>Open the Outer Gates</h3>
-    <p>Given x = Rcosθ and y = Rsinθ, explain why x² + y² = R² for every angle θ.</p>
-    <textarea class="proof" id="outerProof" placeholder="Substitute x and y, factor, and use the Pythagorean Identity..."></textarea>
-    <button class="action gateBtn" data-gate="outer">PRESENT PROOF</button>
+    <p>Given x = Rcosθ and y = Rsinθ, which argument proves x² + y² = R²?</p>
+    <div class="answers">
+      <button class="choice" data-answer="wrong">x²+y²=R²(cosθ+sinθ)=R²</button>
+      <button class="choice" data-answer="correct">x²+y²=R²cos²θ+R²sin²θ=R²(cos²θ+sin²θ)=R²</button>
+      <button class="choice" data-answer="wrong">x²+y²=R(cos²θ+sin²θ)=R</button>
+      <button class="choice" data-answer="wrong">x²+y²=R²cosθ sinθ</button>
+    </div>
+    <div class="hint">Substitute the parametric equations, square each, factor R², then use the Pythagorean Identity.</div>
     <div class="feedback" id="outerFeedback"></div>
   </div>
 </section>
@@ -252,7 +485,7 @@ h1{font-size:clamp(3.2rem,7.8vw,7.4rem);line-height:.88;letter-spacing:-.055em;m
         <button class="choice" data-answer="wrong">(√6 + √2)/4</button>
         <button class="choice" data-answer="wrong">(√6 − √2)/4</button>
       </div>
-      <button class="action hintBtn">USE INSIGHT</button><div class="hint">13π/12 = π + π/12, and the angle is in Quadrant III.</div><div class="feedback"></div>
+      <button class="action hintBtn">USE INSIGHT</button><div class="hint">13π/12 = π + π/12, and the angle is in Quadrant III.</div><div class="lock-stamp">LOCKED — points forfeited for this challenge.</div><div class="feedback"></div>
     </article>
 
     <article class="challenge" data-id="2.2" data-points="15" data-item="C">
@@ -263,7 +496,7 @@ h1{font-size:clamp(3.2rem,7.8vw,7.4rem);line-height:.88;letter-spacing:-.055em;m
         <button class="choice" data-answer="wrong">(√2/2)(cos x − sin x)</button>
         <button class="choice" data-answer="wrong">sin x + cos x</button>
       </div>
-      <button class="action hintBtn">USE INSIGHT</button><div class="hint">Use sin(a−b)=sin a cos b−cos a sin b. Remember cos(3π/4) is negative.</div><div class="feedback"></div>
+      <button class="action hintBtn">USE INSIGHT</button><div class="hint">Use sin(a−b)=sin a cos b−cos a sin b. Remember cos(3π/4) is negative.</div><div class="lock-stamp">LOCKED — points forfeited for this challenge.</div><div class="feedback"></div>
     </article>
 
     <article class="challenge" data-id="2.3" data-points="20" data-item="R">
@@ -274,26 +507,37 @@ h1{font-size:clamp(3.2rem,7.8vw,7.4rem);line-height:.88;letter-spacing:-.055em;m
         <button class="choice" data-answer="wrong">sin(x)</button>
         <button class="choice" data-answer="wrong">cos(x)</button>
       </div>
-      <button class="action hintBtn">USE INSIGHT</button><div class="hint">Apply cos(a+b)=cos a cos b−sin a sin b.</div><div class="feedback"></div>
+      <button class="action hintBtn">USE INSIGHT</button><div class="hint">Apply cos(a+b)=cos a cos b−sin a sin b.</div><div class="lock-stamp">LOCKED — points forfeited for this challenge.</div><div class="feedback"></div>
     </article>
 
     <article class="challenge" data-id="2.4" data-points="20" data-item="I">
       <div class="points">+20</div><h3>Pendant of Double Angles</h3>
-      <p>Prove the double-angle relationship from the activity by transforming one side into the other.</p>
+      <p>Which sequence correctly proves 2cos(2x)/sin(2x) = cot(x) − tan(x)?</p>
       <div class="reward">Reward: Insight</div>
-      <textarea class="proof proofResponse" placeholder="Show your identity steps..."></textarea>
-      <button class="action proofCheck">SUBMIT PROOF</button>
-      <button class="action hintBtn">USE INSIGHT</button><div class="hint">Rewrite cot and tan using sine and cosine, combine the fractions, then look for cos²x−sin²x and 2sinx cosx.</div><div class="feedback"></div>
+      <div class="answers">
+        <button class="choice" data-answer="wrong">cot x − tan x = cos x − sin x = cos(2x)</button>
+        <button class="choice" data-answer="correct">cot x − tan x = (cos²x−sin²x)/(sin x cos x) = 2cos(2x)/sin(2x)</button>
+        <button class="choice" data-answer="wrong">cot x − tan x = 1/(sin x cos x) = 2/sin(2x)</button>
+        <button class="choice" data-answer="wrong">cot x − tan x = cos(2x)/sin(2x)</button>
+      </div>
+      <div class="hint">Rewrite cot and tan using sine and cosine, combine the fractions, then use double-angle identities.</div>
+      <div class="feedback"></div>
+      <div class="lock-stamp">LOCKED — points forfeited for this challenge.</div>
     </article>
 
   </div>
 
-  <div class="final-gate" id="innerGate">
-    <div class="kicker">LOCATION TRIAL</div>
+  <div class="final-gate scored-gate" id="innerGate" data-id="G2" data-points="10">
+    <div class="kicker">LOCATION TRIAL • +10 AURA</div>
     <h3>Break the Sanctum's Defense</h3>
-    <p>Express cos(2θ) using only cos(θ), then explain what the expression tells you about the horizontal force when the angle doubles.</p>
-    <textarea class="proof" id="innerProof" placeholder="Use a double-angle identity..."></textarea>
-    <button class="action gateBtn" data-gate="inner">BREAK THE DEFENSE</button>
+    <p>Which expression rewrites cos(2θ) using only cos(θ)?</p>
+    <div class="answers">
+      <button class="choice" data-answer="wrong">1−2cos²θ</button>
+      <button class="choice" data-answer="wrong">2cosθ−1</button>
+      <button class="choice" data-answer="correct">2cos²θ−1</button>
+      <button class="choice" data-answer="wrong">cos²θ−1</button>
+    </div>
+    <div class="hint">Start with cos2θ = cos²θ−sin²θ and replace sin²θ with 1−cos²θ.</div>
     <div class="feedback" id="innerFeedback"></div>
   </div>
 </section>
@@ -306,10 +550,17 @@ h1{font-size:clamp(3.2rem,7.8vw,7.4rem);line-height:.88;letter-spacing:-.055em;m
 
     <article class="challenge" data-id="3.1" data-points="30" data-item="I">
       <div class="points">+30</div><h3>Beast of Double Angles</h3>
-      <p>Prove cot(x) sin(2x) = 1 + cos(2x).</p><div class="reward">Reward: Insight</div>
-      <textarea class="proof proofResponse" placeholder="Transform the left side..."></textarea>
-      <button class="action proofCheck">SUBMIT PROOF</button>
-      <button class="action hintBtn">USE INSIGHT</button><div class="hint">Use cot x = cos x/sin x and sin 2x = 2sin x cos x.</div><div class="feedback"></div>
+      <p>Which sequence proves cot(x) sin(2x) = 1 + cos(2x)?</p>
+      <div class="reward">Reward: Insight</div>
+      <div class="answers">
+        <button class="choice" data-answer="wrong">cot x·sin2x = cos x·2cos x = 2cos x</button>
+        <button class="choice" data-answer="wrong">cot x·sin2x = 2sin²x = 1−cos2x</button>
+        <button class="choice" data-answer="correct">cot x·sin2x = (cos x/sin x)(2sin x cos x) = 2cos²x = 1+cos2x</button>
+        <button class="choice" data-answer="wrong">cot x·sin2x = cos2x</button>
+      </div>
+      <div class="hint">Use cot x = cos x/sin x and sin2x = 2sin x cos x.</div>
+      <div class="feedback"></div>
+      <div class="lock-stamp">LOCKED — points forfeited for this challenge.</div>
     </article>
 
     <article class="challenge" data-id="3.2" data-points="30" data-item="R">
@@ -320,15 +571,22 @@ h1{font-size:clamp(3.2rem,7.8vw,7.4rem);line-height:.88;letter-spacing:-.055em;m
         <button class="choice" data-answer="wrong">A=20, midline=15, period=10</button>
         <button class="choice" data-answer="wrong">A=15, midline=20, period=10</button>
       </div>
-      <button class="action hintBtn">USE INSIGHT</button><div class="hint">Period = 2π/B.</div><div class="feedback"></div>
+      <button class="action hintBtn">USE INSIGHT</button><div class="hint">Period = 2π/B.</div><div class="lock-stamp">LOCKED — points forfeited for this challenge.</div><div class="feedback"></div>
     </article>
 
     <article class="challenge" data-id="3.3" data-points="35" data-item="C">
       <div class="points">+35</div><h3>Chalice of Triple Angles</h3>
-      <p>Derive sin(3x)=3sin(x)−4sin³(x).</p><div class="reward">Reward: Clarity</div>
-      <textarea class="proof proofResponse" placeholder="Start with sin(2x+x)..."></textarea>
-      <button class="action proofCheck">SUBMIT DERIVATION</button>
-      <button class="action hintBtn">USE INSIGHT</button><div class="hint">Use sin(2x+x), then substitute sin2x and cos2x identities.</div><div class="feedback"></div>
+      <p>Which derivation correctly leads to sin(3x)=3sin(x)−4sin³(x)?</p>
+      <div class="reward">Reward: Clarity</div>
+      <div class="answers">
+        <button class="choice" data-answer="correct">sin(2x+x)=sin2x cosx+cos2x sinx → 2sinx cos²x+(1−2sin²x)sinx → 3sinx−4sin³x</button>
+        <button class="choice" data-answer="wrong">sin(2x+x)=sin2x+sinx → 2sinx cosx+sinx</button>
+        <button class="choice" data-answer="wrong">sin(3x)=3sinx cosx</button>
+        <button class="choice" data-answer="wrong">sin(3x)=sinx(1−4sin²x)</button>
+      </div>
+      <div class="hint">Start with sin(2x+x), then substitute the sum and double-angle identities.</div>
+      <div class="feedback"></div>
+      <div class="lock-stamp">LOCKED — points forfeited for this challenge.</div>
     </article>
 
     <article class="challenge" data-id="3.4" data-points="35" data-item="K">
@@ -339,15 +597,15 @@ h1{font-size:clamp(3.2rem,7.8vw,7.4rem);line-height:.88;letter-spacing:-.055em;m
         <button class="choice" data-answer="correct">2π</button>
         <button class="choice" data-answer="wrong">4π</button>
       </div>
-      <button class="action hintBtn">USE INSIGHT</button><div class="hint">Ask for the smallest shift that leaves both sec and csc unchanged simultaneously.</div><div class="feedback"></div>
+      <button class="action hintBtn">USE INSIGHT</button><div class="hint">Ask for the smallest shift that leaves both sec and csc unchanged simultaneously.</div><div class="lock-stamp">LOCKED — points forfeited for this challenge.</div><div class="feedback"></div>
     </article>
 
   </div>
 
   <div class="hidden-challenge" id="hiddenChallenge">
     <div class="kicker">SECRET CHAMBER UNLOCKED</div>
-    <h3>The Archivist's Bonus (+20 Aura)</h3>
-    <p>You collected all three Knowledge items. Which identity converts a sum of sines into a product?</p>
+    <h3>The Archivist's Secret Cache</h3>
+    <p>Your accumulated Knowledge revealed a secret chamber. Which identity converts a sum of sines into a product?</p>
     <div class="answers" id="bonusAnswers">
       <button class="choice" data-answer="correct">Sum-to-Product</button>
       <button class="choice" data-answer="wrong">Pythagorean</button>
@@ -356,47 +614,81 @@ h1{font-size:clamp(3.2rem,7.8vw,7.4rem);line-height:.88;letter-spacing:-.055em;m
     <div class="feedback" id="bonusFeedback"></div>
   </div>
 
-  <div class="final-gate" id="heartGate">
-    <div class="kicker">LOCATION TRIAL</div>
+  <div class="final-gate scored-gate" id="heartGate" data-id="G3" data-points="10">
+    <div class="kicker">LOCATION TRIAL • +10 AURA</div>
     <h3>Claim the Heart Sigil</h3>
-    <p>Before approaching the final door, explain why higher-order identities can be built from simpler identities rather than memorized as isolated facts.</p>
-    <textarea class="proof" id="heartProof" placeholder="Connect sum identities, double-angle identities, and algebraic substitution..."></textarea>
-    <button class="action gateBtn" data-gate="heart">CLAIM HEART SIGIL</button>
+    <p>Why can higher-order trig identities often be derived instead of memorized as isolated formulas?</p>
+    <div class="answers">
+      <button class="choice" data-answer="wrong">Because all identities are the same equation written in different fonts.</button>
+      <button class="choice" data-answer="wrong">Because higher-order identities work only at special angles.</button>
+      <button class="choice" data-answer="wrong">Because graphing technology automatically proves them.</button>
+      <button class="choice" data-answer="correct">Because foundational identities can be combined with substitution and algebra to generate more complex identities.</button>
+    </div>
+    <div class="hint">Think about how the triple-angle identity can be built from a sum identity and double-angle identities.</div>
     <div class="feedback" id="heartFeedback"></div>
   </div>
 </section>
 
-<section class="final-escape locked" id="escape">
-  <div class="kicker">FINAL DOOR</div>
+<section class="final-escape locked" id="escape" data-id="FINAL" data-points="10">
+  <div class="kicker">FINAL DOOR • +10 AURA</div>
   <h2>The Beat-Frequency Lock</h2>
-  <p>Combine sin(10t) and sin(8t) using the Sum-to-Product Identity. The door responds to the beat pattern.</p>
+  <p>Combine sin(10t) and sin(8t) using the Sum-to-Product Identity. The door responds to the resulting beat pattern.</p>
   <div class="gate-status">
-    <span class="sig" id="sigAura">80 Aura</span>
     <span class="sig" id="sigOuter">Outer Sigil</span>
     <span class="sig" id="sigInner">Inner Sigil</span>
     <span class="sig" id="sigHeart">Heart Sigil</span>
   </div>
   <div class="beat-visual"><div class="wave-line"></div></div>
-  <p><strong>Step 1.</strong> Which product is equivalent to sin(10t)+sin(8t)?</p>
-  <div class="answers" id="escapeAnswers">
-    <button class="choice" data-answer="correct">2sin(9t)cos(t)</button>
-    <button class="choice" data-answer="wrong">2sin(t)cos(9t)</button>
-    <button class="choice" data-answer="wrong">sin(18t)cos(2t)</button>
+  <div class="answers">
+    <button class="choice" data-answer="wrong">2sin(t)cos(9t), with average 1 and beat 9</button>
+    <button class="choice" data-answer="wrong">sin(18t)cos(2t), with average 18 and beat 2</button>
+    <button class="choice" data-answer="correct">2sin(9t)cos(t), with average angular frequency 9 and beat-envelope angular frequency 1</button>
+    <button class="choice" data-answer="wrong">2cos(9t)sin(t), with average 9 and beat 1</button>
   </div>
-  <p><strong>Step 2.</strong> Enter the average angular frequency and difference/beat angular frequency.</p>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:520px">
-    <input id="avgFreq" type="number" placeholder="average frequency">
-    <input id="beatFreq" type="number" placeholder="beat frequency">
-  </div>
-  <button class="action" id="escapeBtn" style="margin-top:12px">UNLOCK THE FINAL DOOR</button>
+  <div class="hint">For sinA + sinB, use 2sin((A+B)/2)cos((A−B)/2).</div>
   <div class="feedback" id="escapeFeedback"></div>
 </section>
 
-<section class="reflection">
-  <div class="kicker">ADVENTURER'S REFLECTION</div>
-  <h2>How did you navigate the maze?</h2>
-  <p style="color:var(--muted)">Which challenges were most difficult? How did the items affect your strategy? What would you change about your approach?</p>
-  <textarea id="reflectionText" placeholder="Reflect on your choices and strategy..."></textarea>
+<section class="final-reflection" id="reflection">
+  <div class="kicker">THE ORACLE'S FINAL REFLECTION</div>
+  <h2>What strategy best describes expert identity work?</h2>
+  <p style="color:var(--muted)">
+    First, identify the strongest mathematical strategy. Once you select the correct strategy,
+    the Oracle will open a final written reflection. This reflection does not change your Aura grade.
+  </p>
+
+  <div class="knowledge-only">
+    📜 Knowledge is the only magical item permitted in the Oracle's chamber.
+    It may reveal strategic guidance before you make your selection.
+  </div>
+
+  <div class="answers" id="reflectionAnswers">
+    <button class="choice" data-answer="wrong">Memorize every identity separately and avoid changing forms.</button>
+    <button class="choice" data-answer="correct">Choose identities strategically, rewrite expressions into compatible forms, and use algebra to connect them.</button>
+    <button class="choice" data-answer="wrong">Convert every problem to decimals before using an identity.</button>
+    <button class="choice" data-answer="wrong">Always begin with the most complicated side and expand everything immediately.</button>
+  </div>
+
+  <button class="action" id="useKnowledgeFinal" style="margin-top:12px">📜 USE KNOWLEDGE</button>
+  <button class="action" id="submitReflection" style="margin-top:12px">PRESENT STRATEGY TO THE ORACLE</button>
+
+  <div class="hint" id="reflectionKnowledgeHint">
+    The Oracle whispers: expert solvers look for structure and compatibility rather than treating identities as isolated formulas.
+  </div>
+  <div class="feedback" id="reflectionFeedback"></div>
+
+  <div class="open-reflection-stage" id="openReflectionStage">
+    <div class="kicker">FINAL JOURNAL ENTRY</div>
+    <h3>The Oracle opens the last page...</h3>
+    <p style="color:var(--muted);line-height:1.6">
+      Think about your journey through the labyrinth. Which trigonometric identity or type of problem
+      was most challenging for you, and what strategy would you use if you encountered a similar
+      problem again? Explain your thinking in complete sentences.
+    </p>
+    <textarea id="openReflectionText" placeholder="The most challenging part for me was... Next time, I would..."></textarea>
+    <button class="action" id="sealOpenReflection" style="margin-top:12px">SEAL MY JOURNAL ENTRY</button>
+    <div class="reflection-sealed" id="openReflectionFeedback"></div>
+  </div>
 </section>
 
 </main>
@@ -404,14 +696,16 @@ h1{font-size:clamp(3.2rem,7.8vw,7.4rem);line-height:.88;letter-spacing:-.055em;m
 </div>
 
 <script>
+
 const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
 
 let aura=0;
 const completed=new Set();
+const failed=new Set();
 const items={C:0,K:0,I:0,R:0};
 const gates={outer:false,inner:false,heart:false};
 let bonusDone=false;
-let escapeChoiceCorrect=false;
+let finalReflectionDone=false;
 
 $("#startBtn").onclick=()=>$("#game").scrollIntoView({behavior:"smooth"});
 $$(".nav-btn").forEach(b=>b.onclick=()=>{
@@ -420,101 +714,315 @@ $$(".nav-btn").forEach(b=>b.onclick=()=>{
   $("#"+b.dataset.target).scrollIntoView({behavior:"smooth",block:"start"});
 });
 
+function toast(text){
+  const t=$("#itemToast");
+  t.textContent=text;t.classList.add("show");
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer=setTimeout(()=>t.classList.remove("show"),2400);
+}
 function updateHUD(){
   $("#auraTop").textContent=aura;
-  $("#knowledgeTop").textContent=Math.min(items.K,3);
-  $("#auraBar").style.width=Math.min(100,aura/80*100)+"%";
-  ["C","K","I","R"].forEach(k=>$("#inv"+k).classList.toggle("owned",items[k]>0));
+  $("#knowledgeTop").textContent=items.K;
+  $("#auraBar").style.width=Math.min(100,aura/270*100)+"%";
+  ["C","K","I","R"].forEach(k=>{
+    $("#inv"+k).classList.toggle("owned",items[k]>0);
+    $("#count"+k).textContent=items[k];
+  });
   if(items.K>=3) $("#hiddenChallenge").classList.add("show");
 
-  $("#sigAura").classList.toggle("done",aura>=80);
   $("#sigOuter").classList.toggle("done",gates.outer);
   $("#sigInner").classList.toggle("done",gates.inner);
   $("#sigHeart").classList.toggle("done",gates.heart);
 
-  const unlocked=aura>=80&&gates.outer&&gates.inner&&gates.heart;
+  const unlocked=gates.outer&&gates.inner&&gates.heart;
   $("#escape").classList.toggle("locked",!unlocked);
 }
-function completeChallenge(card){
-  const id=card.dataset.id;
-  if(completed.has(id)) return;
-  completed.add(id);
-  aura+=+card.dataset.points;
-  items[card.dataset.item]++;
-  card.classList.add("completed");
-  card.querySelector(".feedback").textContent=`Solved! +${card.dataset.points} Aura. Item added to inventory.`;
+function addUtility(card){
+  if(card.querySelector(".utility-bar")) return;
+
+  const hint=card.querySelector(".hint");
+  if(hint) hint.style.display="none";
+
+  const bar=document.createElement("div");
+  bar.className="utility-bar";
+  bar.innerHTML=`
+    <button class="utility useInsight">💡 Insight: Hint</button>
+    <button class="utility useReflection">🪞 Reflection: Safe Check</button>
+    <button class="utility useClarity">🔮 Clarity: Remove 2</button>`;
+  const submit=document.createElement("button");
+  submit.className="action submit-answer";
+  submit.textContent="CAST ANSWER";
+
+  const fb=card.querySelector(".feedback");
+  card.insertBefore(bar,fb);
+  card.insertBefore(submit,fb);
+
+  bar.querySelector(".useInsight").onclick=()=>useInsight(card);
+  bar.querySelector(".useReflection").onclick=()=>useReflection(card);
+  bar.querySelector(".useClarity").onclick=()=>useClarity(card);
+  submit.onclick=()=>submitCard(card);
+}
+function setupChoices(card){
+  card.querySelectorAll(".answers .choice").forEach(btn=>{
+    btn.onclick=()=>{
+      if(completed.has(card.dataset.id)||failed.has(card.dataset.id)||btn.classList.contains("eliminated")) return;
+      card.querySelectorAll(".answers .choice").forEach(x=>x.classList.remove("selected"));
+      btn.classList.add("selected");
+    };
+  });
+}
+function selected(card){return card.querySelector(".answers .choice.selected")}
+function cardFeedback(card){return card.querySelector(".feedback")}
+
+function useInsight(card){
+  if(items.I<=0){cardFeedback(card).textContent="You do not have an Item of Insight.";return}
+  items.I--;
+  const hint=card.querySelector(".hint");
+  if(hint){hint.style.display="block";hint.classList.add("show")}
+  cardFeedback(card).textContent="Insight reveals a clue without affecting your points.";
+  toast("💡 Insight consumed: a clue appears.");
   updateHUD();
 }
-
-$$(".challenge .choice").forEach(btn=>btn.onclick=()=>{
-  const card=btn.closest(".challenge");
-  if(card.classList.contains("completed")) return;
-  card.querySelectorAll(".choice").forEach(x=>x.classList.remove("correct","wrong"));
-  const ok=btn.dataset.answer==="correct";
-  btn.classList.add(ok?"correct":"wrong");
-  if(ok) completeChallenge(card);
-  else card.querySelector(".feedback").textContent="The labyrinth rejects that answer. Recheck the identity.";
-});
-
-$$(".proofCheck").forEach(btn=>btn.onclick=()=>{
-  const card=btn.closest(".challenge"),txt=card.querySelector(".proofResponse").value.trim();
-  if(txt.length<70){
-    card.querySelector(".feedback").textContent="Show more of your reasoning before claiming the reward.";
-    return;
+function useReflection(card){
+  if(items.R<=0){cardFeedback(card).textContent="You do not have an Item of Reflection.";return}
+  const pick=selected(card);
+  if(!pick){cardFeedback(card).textContent="Select an answer first, then use Reflection to test it safely.";return}
+  items.R--;
+  const ok=pick.dataset.answer==="correct";
+  cardFeedback(card).textContent=ok
+    ?"The mirror glows: your selected answer is correct. You may now submit it safely."
+    :"The mirror clouds: that answer is incorrect. The challenge remains unlocked, so choose again.";
+  if(!ok) pick.classList.remove("selected");
+  toast("🪞 Reflection consumed: your choice was checked safely.");
+  updateHUD();
+}
+function useClarity(card){
+  if(items.C<=0){cardFeedback(card).textContent="You do not have an Item of Clarity.";return}
+  const wrong=[...card.querySelectorAll(".answers .choice[data-answer='wrong']:not(.eliminated)")];
+  if(!wrong.length){cardFeedback(card).textContent="There are no remaining wrong choices to remove.";return}
+  items.C--;
+  wrong.slice(0,Math.min(2,wrong.length)).forEach(b=>{
+    b.classList.add("eliminated");b.classList.remove("selected");
+  });
+  cardFeedback(card).textContent="Clarity dissolves two false paths.";
+  toast("🔮 Clarity consumed: two wrong choices vanish.");
+  updateHUD();
+}
+function lockCard(card,msg){
+  failed.add(card.dataset.id);
+  card.classList.add("failed");
+  card.querySelectorAll("button").forEach(b=>b.disabled=true);
+  cardFeedback(card).textContent=msg || "Incorrect. This challenge is sealed and its Aura is forfeited.";
+}
+function rewardItem(card){
+  const item=card.dataset.item;
+  if(item && items[item]!==undefined){
+    items[item]++;
+    const names={C:"Clarity",K:"Knowledge",I:"Insight",R:"Reflection"};
+    toast(`✦ ${names[item]} acquired.`);
   }
-  completeChallenge(card);
+}
+function completeCard(card){
+  if(completed.has(card.dataset.id)) return;
+  completed.add(card.dataset.id);
+  const pts=Number(card.dataset.points||0);
+  aura+=pts;
+  card.classList.add("completed");
+  rewardItem(card);
+  card.querySelectorAll("button").forEach(b=>b.disabled=true);
+  cardFeedback(card).textContent=`Correct. +${pts} Aura claimed.`;
+  updateHUD();
+}
+function submitCard(card){
+  if(completed.has(card.dataset.id)||failed.has(card.dataset.id)) return;
+  const pick=selected(card);
+  if(!pick){cardFeedback(card).textContent="Choose an answer before casting it.";return}
+  if(pick.dataset.answer==="correct") completeCard(card);
+  else lockCard(card,"Incorrect. The labyrinth seals this challenge; its Aura Points are permanently forfeited.");
+}
+
+// Normal challenge cards
+$$(".challenge").forEach(card=>{
+  setupChoices(card);
+  addUtility(card);
 });
 
-$$(".hintBtn").forEach(btn=>btn.onclick=()=>{
-  const card=btn.closest(".challenge");
-  if(items.I>0){
-    items.I--; card.querySelector(".hint").classList.add("show");
-    card.querySelector(".feedback").textContent="An Item of Insight dissolves into a clue.";
-    updateHUD();
+// Scored gates
+$$(".scored-gate").forEach(card=>{
+  setupChoices(card);
+  addUtility(card);
+  // Override complete behavior to award sigil.
+  const originalSubmit=card.querySelector(".submit-answer");
+  originalSubmit.onclick=()=>{
+    if(completed.has(card.dataset.id)||failed.has(card.dataset.id)) return;
+    const pick=selected(card);
+    if(!pick){cardFeedback(card).textContent="Choose an answer before casting it.";return}
+    if(pick.dataset.answer==="correct"){
+      completeCard(card);
+      const gate=card.id==="outerGate"?"outer":card.id==="innerGate"?"inner":"heart";
+      gates[gate]=true;
+      cardFeedback(card).textContent+= " Sigil earned.";
+      updateHUD();
+    }else{
+      lockCard(card,"Incorrect. The trial is sealed, its 10 Aura are forfeited, and this run cannot earn that sigil.");
+    }
+  };
+});
+
+// Because a failed gate would make final escape impossible, allow progression without the points
+// after a failure by granting the sigil but keeping the Aura forfeited.
+$$(".scored-gate").forEach(card=>{
+  const observer=new MutationObserver(()=>{
+    if(card.classList.contains("failed")){
+      const gate=card.id==="outerGate"?"outer":card.id==="innerGate"?"inner":"heart";
+      gates[gate]=true;
+      updateHUD();
+    }
+  });
+  observer.observe(card,{attributes:true,attributeFilter:["class"]});
+});
+
+// Hidden chamber: Knowledge-themed bonus, no grade points.
+$("#bonusAnswers").querySelectorAll(".choice").forEach(btn=>{
+  btn.onclick=()=>{
+    if(bonusDone)return;
+    $("#bonusAnswers").querySelectorAll(".choice").forEach(x=>x.classList.remove("selected"));
+    btn.classList.add("selected");
+    if(btn.dataset.answer==="correct"){
+      bonusDone=true;
+      items.K++;
+      $("#bonusFeedback").textContent="The archive opens. You gain an additional Item of Knowledge.";
+      toast("📜 Knowledge acquired from the Secret Cache.");
+      updateHUD();
+    }else{
+      $("#bonusFeedback").textContent="The archive rejects that path. Try another—the cache is not graded.";
+    }
+  };
+});
+
+// Final escape = 10 points, one shot, multiple choice.
+setupChoices($("#escape"));
+addUtility($("#escape"));
+$("#escape .submit-answer").textContent="UNLOCK FINAL DOOR";
+$("#escape .submit-answer").onclick=()=>{
+  const card=$("#escape");
+  if(completed.has("FINAL")||failed.has("FINAL")) return;
+  const pick=selected(card);
+  if(!pick){cardFeedback(card).textContent="Choose the beat-frequency identity first.";return}
+  if(pick.dataset.answer==="correct"){
+    completeCard(card);
+    $("#escapeFeedback").textContent="THE DOOR OPENS. 2sin(9t)cos(t): average angular frequency 9, beat-envelope angular frequency 1.";
+    $("#escape").style.boxShadow="0 0 55px rgba(185,239,114,.25)";
+    showGrade();
   }else{
-    card.querySelector(".feedback").textContent="You need an Item of Insight to reveal this clue.";
-  }
-});
-
-$$(".gateBtn").forEach(btn=>btn.onclick=()=>{
-  const g=btn.dataset.gate, field=$("#"+g+"Proof"), fb=$("#"+g+"Feedback"), text=field.value.trim();
-  if(text.length<90){
-    fb.textContent="The guardian wants a fuller mathematical explanation.";
-    return;
-  }
-  gates[g]=true; fb.textContent="Sigil earned. The passage opens."; updateHUD();
-});
-
-$("#bonusAnswers").querySelectorAll(".choice").forEach(btn=>btn.onclick=()=>{
-  if(bonusDone)return;
-  const ok=btn.dataset.answer==="correct";
-  btn.classList.add(ok?"correct":"wrong");
-  if(ok){
-    bonusDone=true;aura+=20;$("#bonusFeedback").textContent="Secret knowledge recovered! +20 Aura.";updateHUD();
-  }else $("#bonusFeedback").textContent="The archive remains sealed.";
-});
-
-$("#escapeAnswers").querySelectorAll(".choice").forEach(btn=>btn.onclick=()=>{
-  $("#escapeAnswers").querySelectorAll(".choice").forEach(x=>x.classList.remove("correct","wrong"));
-  escapeChoiceCorrect=btn.dataset.answer==="correct";
-  btn.classList.add(escapeChoiceCorrect?"correct":"wrong");
-});
-
-$("#escapeBtn").onclick=()=>{
-  if(!(aura>=80&&gates.outer&&gates.inner&&gates.heart)){
-    $("#escapeFeedback").textContent="The lock is dormant. You still need 80 Aura and all three sigils.";
-    return;
-  }
-  const avg=+$("#avgFreq").value,beat=+$("#beatFreq").value;
-  if(escapeChoiceCorrect && avg===9 && beat===1){
-    $("#escapeFeedback").textContent="THE DOOR OPENS. 2sin(9t)cos(t): average angular frequency 9, beat-envelope angular frequency 1. You escaped Trigonovia!";
-    $("#escape").style.boxShadow="0 0 50px rgba(185,239,114,.25)";
-  }else{
-    $("#escapeFeedback").textContent="The mechanism hums, but does not unlock. Check the average and half-difference frequencies.";
+    lockCard(card,"Incorrect. The final 10 Aura are forfeited—but the door reveals the solution after the attempt.");
+    showGrade();
   }
 };
 
+// Final reflection: Knowledge is the only usable item.
+// Students must identify the correct strategy before the open response appears.
+$("#reflectionAnswers").querySelectorAll(".choice").forEach(btn=>{
+  btn.onclick=()=>{
+    if(finalReflectionDone)return;
+    $("#reflectionAnswers").querySelectorAll(".choice").forEach(x=>x.classList.remove("selected"));
+    btn.classList.add("selected");
+  };
+});
+
+$("#useKnowledgeFinal").onclick=()=>{
+  if(items.K<=0){
+    $("#reflectionFeedback").textContent="You have no Knowledge remaining. Make your final strategy choice unaided.";
+    return;
+  }
+  items.K--;
+  $("#reflectionKnowledgeHint").style.display="block";
+  $("#reflectionKnowledgeHint").classList.add("show");
+  $("#reflectionFeedback").textContent="Knowledge reveals the Oracle's strategic guidance.";
+  toast("📜 Knowledge consumed in the Oracle's chamber.");
+  updateHUD();
+};
+
+$("#submitReflection").onclick=()=>{
+  const pick=$("#reflectionAnswers .choice.selected");
+  if(!pick){
+    $("#reflectionFeedback").textContent="Choose the strategy that best represents expert identity work.";
+    return;
+  }
+
+  if(pick.dataset.answer!=="correct"){
+    $("#reflectionFeedback").textContent="The Oracle asks you to reconsider. This reflection does not lock—choose another strategy and try again.";
+    pick.classList.remove("selected");
+    return;
+  }
+
+  $("#reflectionFeedback").textContent="The Oracle accepts your strategy. The final journal page is now open.";
+  $("#reflectionAnswers").querySelectorAll(".choice").forEach(b=>b.disabled=true);
+  $("#submitReflection").disabled=true;
+  $("#useKnowledgeFinal").disabled=true;
+  $("#openReflectionStage").classList.add("show");
+  $("#openReflectionStage").scrollIntoView({behavior:"smooth",block:"center"});
+};
+
+$("#sealOpenReflection").onclick=()=>{
+  const text=$("#openReflectionText").value.trim();
+
+  if(text.length<60){
+    $("#openReflectionFeedback").textContent="Add a little more detail about both the challenge and the strategy you would use next time.";
+    return;
+  }
+
+  finalReflectionDone=true;
+  $("#openReflectionText").disabled=true;
+  $("#sealOpenReflection").disabled=true;
+  $("#openReflectionFeedback").textContent="✦ Journal sealed. Your reflection has been completed.";
+};
+
+function showGrade(){
+  // Final percentage is strictly Aura / 270.
+  let panel=$("#gradePanel");
+  if(!panel){
+    panel=document.createElement("div");
+    panel.id="gradePanel";
+    panel.className="grade-panel";
+    panel.innerHTML=`
+      <div class="kicker">FINAL GRADE</div>
+      <div class="grade-number" id="gradeNumber"></div>
+      <div id="gradeMessage" style="color:var(--muted);font-weight:800"></div>
+      <div class="grade-breakdown">
+        <div class="grade-stat"><span class="small">Aura Earned</span><strong id="earnedPoints"></strong></div>
+        <div class="grade-stat"><span class="small">Aura Possible</span><strong>270</strong></div>
+        <div class="grade-stat"><span class="small">Challenges Locked</span><strong id="lockedCount"></strong></div>
+      </div>`;
+    $("#escape").appendChild(panel);
+  }
+  const pct=Math.round((aura/270)*1000)/10;
+  panel.classList.add("show");
+  $("#gradeNumber").textContent=pct.toFixed(1)+"%";
+  $("#earnedPoints").textContent=aura;
+  $("#lockedCount").textContent=failed.size;
+  $("#gradeMessage").textContent=
+    pct===100?"Perfect run: all 270 Aura secured."
+    :pct>=90?"Masterful navigation. Only a few points escaped you."
+    :pct>=80?"Strong command of the labyrinth's identities."
+    :pct>=70?"You escaped with solid progress; revisit the sealed chambers."
+    :"The labyrinth exposed several identity gaps worth revisiting.";
+}
+
+// Shuffle answer order on load so correct answers do not follow a fixed position.
+// Uses DOM shuffling, preserving data-answer correctness.
+$$(".answers").forEach(group=>{
+  const buttons=[...group.children];
+  for(let i=buttons.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [buttons[i],buttons[j]]=[buttons[j],buttons[i]];
+  }
+  buttons.forEach(b=>group.appendChild(b));
+});
+
 updateHUD();
+
 </script>
+<div class="item-toast" id="itemToast"></div>
 </body>
 </html>
