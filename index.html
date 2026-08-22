@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Labyrinth of Trigonovia</title>
+<style>
+*{box-sizing:border-box}
+:root{
+  --bg:#071019;--panel:#111d2a;--panel2:#0b1621;--ink:#f7f8fb;--muted:#9db0bf;
+  --gold:#f5c85b;--cyan:#5de2ef;--violet:#9a86ff;--rose:#ff8eaa;--lime:#b9ef72;
+  --line:#294153;--danger:#ff8478;--good:#75e0a5;
+}
+html{scroll-behavior:smooth}
+body{
+  margin:0;min-height:100vh;font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 12% 8%,rgba(154,134,255,.12),transparent 24%),
+    radial-gradient(circle at 88% 16%,rgba(93,226,239,.10),transparent 25%),
+    linear-gradient(180deg,#050b12,#08131d 48%,#050b11);
+}
+button,input,textarea{font:inherit}
+.shell{width:min(1320px,96%);margin:auto;padding:22px 0 80px}
+.topbar{
+  position:sticky;top:10px;z-index:50;display:grid;grid-template-columns:1fr auto auto;gap:14px;align-items:center;
+  border:1px solid var(--line);background:rgba(8,18,27,.92);backdrop-filter:blur(12px);
+  padding:12px 16px;border-radius:18px
+}
+.brand{font-weight:950;letter-spacing:.05em}.brand span{color:var(--gold)}
+.stat{padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#09151f;font-weight:850}
+.stat b{color:var(--gold)}
+.hero{
+  min-height:68vh;display:grid;grid-template-columns:1.05fr .95fr;gap:26px;align-items:center;padding:62px 8px 38px
+}
+.eyebrow,.kicker{font-size:.74rem;font-weight:950;letter-spacing:.19em;color:var(--cyan)}
+h1{font-size:clamp(3.2rem,7.8vw,7.4rem);line-height:.88;letter-spacing:-.055em;margin:12px 0 20px}
+.hero p{max-width:740px;color:var(--muted);font-size:1.15rem;line-height:1.7}
+.start{
+  border:none;background:var(--gold);color:#251d0e;font-weight:950;padding:14px 20px;border-radius:12px;
+  box-shadow:0 7px 0 #806426;cursor:pointer;margin-top:14px
+}
+.start:active{transform:translateY(4px);box-shadow:0 3px 0 #806426}
+.maze{
+  position:relative;height:390px;border:1px solid var(--line);border-radius:24px;overflow:hidden;background:#050b11
+}
+.maze::before{
+  content:"";position:absolute;inset:0;
+  background:
+   repeating-linear-gradient(0deg,transparent 0 28px,rgba(93,226,239,.07) 29px 31px),
+   repeating-linear-gradient(90deg,transparent 0 28px,rgba(154,134,255,.08) 29px 31px);
+}
+.path{position:absolute;border:4px solid var(--gold);border-radius:18px}
+.p1{left:7%;top:10%;width:34%;height:27%;border-right:none}
+.p2{left:27%;top:35%;width:54%;height:25%;border-left:none}
+.p3{left:48%;top:58%;width:38%;height:29%;border-top:none}
+.rune{position:absolute;font-size:2.3rem;filter:drop-shadow(0 0 12px rgba(245,200,91,.35))}
+.r1{left:10%;top:13%}.r2{left:70%;top:39%}.r3{left:64%;top:70%}
+.goal{position:absolute;right:8%;bottom:9%;padding:9px 12px;border:1px solid var(--lime);color:var(--lime);border-radius:10px;font-weight:900}
+
+.game-grid{display:grid;grid-template-columns:300px minmax(0,1fr);gap:22px;align-items:start}
+.sidebar{
+  position:sticky;top:90px;border:1px solid var(--line);background:rgba(15,28,40,.96);border-radius:22px;padding:18px
+}
+.sidebar h2{margin:0 0 5px}.sidebar p{color:var(--muted);font-size:.9rem;line-height:1.5}
+.aura-track{height:11px;background:#071019;border:1px solid var(--line);border-radius:999px;overflow:hidden;margin:14px 0}
+.aura-track>div{height:100%;width:0;background:linear-gradient(90deg,var(--violet),var(--gold),var(--lime));transition:.3s}
+.nav-btn{width:100%;margin-top:9px;text-align:left;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#09151f;color:var(--ink);font-weight:850;cursor:pointer}
+.nav-btn:hover,.nav-btn.active{border-color:var(--cyan);color:var(--cyan)}
+.inventory{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:14px}
+.item{
+  min-height:70px;padding:9px;border:1px dashed #365369;border-radius:12px;background:#08131c;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;color:#657888;font-size:.72rem
+}
+.item.owned{color:var(--ink);border-style:solid;border-color:var(--gold);background:#17180e}
+.item .icon{font-size:1.45rem}
+
+.main{min-width:0}
+.location{border:1px solid var(--line);border-radius:24px;background:rgba(15,28,40,.92);padding:24px;margin-bottom:18px}
+.location h2{margin:5px 0 8px;font-size:clamp(1.7rem,3vw,2.4rem)}
+.location>p{color:var(--muted);line-height:1.65}
+.challenge-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:18px}
+.challenge{
+  position:relative;border:1px solid var(--line);border-radius:18px;background:#0a1620;padding:18px;
+  min-height:250px;display:flex;flex-direction:column
+}
+.challenge.completed{border-color:var(--good);background:#0b1c18}
+.challenge.locked{opacity:.48}
+.points{position:absolute;right:14px;top:14px;color:var(--gold);font-weight:950}
+.challenge h3{margin:4px 60px 8px 0}
+.challenge p{color:var(--muted);font-size:.92rem;line-height:1.55}
+.reward{font-size:.82rem;color:var(--cyan);margin:4px 0 12px}
+.answers{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto}
+.choice,.action{
+  border:1px solid var(--line);background:#07131c;color:var(--ink);border-radius:10px;padding:10px 12px;font-weight:850;cursor:pointer
+}
+.choice:hover,.action:hover{border-color:var(--cyan)}
+.choice.correct{border-color:var(--good);color:var(--good)}
+.choice.wrong{border-color:var(--danger);color:var(--danger)}
+.feedback{min-height:40px;margin-top:10px;font-weight:800;color:var(--cyan);font-size:.86rem}
+.hint{margin-top:10px;padding:10px;border-left:4px solid var(--violet);background:#0b1421;color:var(--muted);border-radius:8px;font-size:.84rem;display:none}
+.hint.show{display:block}
+.proof{
+  width:100%;min-height:100px;padding:11px;border-radius:10px;background:#07131c;border:1px solid var(--line);color:var(--ink);resize:vertical
+}
+.final-gate{
+  border:1px solid #6b5727;background:
+  radial-gradient(circle at 20% 20%,rgba(245,200,91,.08),transparent 25%),
+  #13170f;border-radius:20px;padding:20px;margin-top:16px
+}
+.final-gate.locked{opacity:.55}
+.final-gate h3{color:var(--gold);margin-top:4px}
+.gate-status{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.sig{padding:7px 10px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:.78rem;font-weight:850}
+.sig.done{border-color:var(--good);color:var(--good)}
+.hidden-challenge{
+  border:1px dashed var(--violet);background:#111126;border-radius:18px;padding:18px;margin-top:16px;display:none
+}
+.hidden-challenge.show{display:block}
+.final-escape{border:2px solid var(--gold);border-radius:24px;padding:24px;background:#12140e;margin-bottom:18px}
+.final-escape.locked{opacity:.45;pointer-events:none}
+.beat-visual{height:140px;background:#071019;border:1px solid var(--line);border-radius:14px;overflow:hidden;position:relative;margin:14px 0}
+.wave-line{position:absolute;left:0;right:0;top:50%;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),var(--gold),var(--cyan),transparent);animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scaleY(1);opacity:.4}50%{transform:scaleY(16);opacity:1}}
+.reflection{border:1px solid var(--line);border-radius:20px;padding:20px;background:#0d1a25}
+.reflection textarea{width:100%;min-height:125px;padding:12px;border-radius:10px;background:#07131c;border:1px solid var(--line);color:var(--ink);resize:vertical}
+@media(max-width:980px){.hero,.game-grid{grid-template-columns:1fr}.sidebar{position:relative;top:auto}}
+@media(max-width:760px){.challenge-grid{grid-template-columns:1fr}.topbar{grid-template-columns:1fr auto}.topbar .stat:nth-child(3){display:none}}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<div class="topbar">
+  <div class="brand">THE LABYRINTH OF <span>TRIGONOVIA</span></div>
+  <div class="stat">Aura <b id="auraTop">0</b>/80</div>
+  <div class="stat">Knowledge <b id="knowledgeTop">0</b>/3</div>
+</div>
+
+<section class="hero">
+  <div>
+    <div class="eyebrow">AN ENCHANTED TRIGONOMETRIC QUEST</div>
+    <h1>ESCAPE<br>THE LABYRINTH</h1>
+    <p>
+      Choose your challenges. Earn Aura Points. Collect magical items. Unlock each gate.
+      Reach at least <strong>80 Aura Points</strong>, complete the three location trials,
+      and decipher the final sound-wave lock to escape Trigonovia.
+    </p>
+    <button class="start" id="startBtn">ENTER THE MAZE →</button>
+  </div>
+  <div class="maze">
+    <div class="path p1"></div><div class="path p2"></div><div class="path p3"></div>
+    <div class="rune r1">△</div><div class="rune r2">∿</div><div class="rune r3">π</div>
+    <div class="goal">FINAL DOOR</div>
+  </div>
+</section>
+
+<section class="game-grid" id="game">
+<aside class="sidebar">
+  <h2>Adventurer Log</h2>
+  <p>Mix and match challenges. You do not need every problem—but the maze rewards strategic choices.</p>
+  <div class="aura-track"><div id="auraBar"></div></div>
+  <button class="nav-btn active" data-target="outer">01 • Outer Gates</button>
+  <button class="nav-btn" data-target="inner">02 • Inner Sanctum</button>
+  <button class="nav-btn" data-target="heart">03 • Heart</button>
+  <button class="nav-btn" data-target="escape">04 • Final Escape</button>
+
+  <div class="kicker" style="margin-top:18px">INVENTORY</div>
+  <div class="inventory">
+    <div class="item" id="invC"><div class="icon">🔮</div>Clarity</div>
+    <div class="item" id="invK"><div class="icon">📜</div>Knowledge</div>
+    <div class="item" id="invI"><div class="icon">💡</div>Insight</div>
+    <div class="item" id="invR"><div class="icon">🪞</div>Reflection</div>
+  </div>
+</aside>
+
+<main class="main">
+
+<section class="location" id="outer">
+  <div class="kicker">LOCATION 01</div>
+  <h2>The Outer Gates</h2>
+  <p>Warm up with identities. Each solved challenge grants Aura and an item type.</p>
+  <div class="challenge-grid">
+
+    <article class="challenge" data-id="1.1" data-points="5" data-item="C">
+      <div class="points">+5</div><h3>Torch of Pythagoras</h3>
+      <p>Simplify sin²(x) + cos²(x).</p><div class="reward">Reward: Clarity</div>
+      <div class="answers">
+        <button class="choice" data-answer="correct">1</button>
+        <button class="choice" data-answer="wrong">sin(x)</button>
+        <button class="choice" data-answer="wrong">2</button>
+      </div>
+      <button class="action hintBtn">USE INSIGHT</button>
+      <div class="hint">Recall the Pythagorean Identity.</div><div class="feedback"></div>
+    </article>
+
+    <article class="challenge" data-id="1.2" data-points="5" data-item="K">
+      <div class="points">+5</div><h3>Shield of Reciprocals</h3>
+      <p>Express sec(x) and csc(x) in terms of cosine and sine.</p><div class="reward">Reward: Knowledge</div>
+      <div class="answers">
+        <button class="choice" data-answer="correct">sec = 1/cos, csc = 1/sin</button>
+        <button class="choice" data-answer="wrong">sec = 1/sin, csc = 1/cos</button>
+      </div>
+      <button class="action hintBtn">USE INSIGHT</button><div class="hint">Their names tell you which reciprocal identity family to use.</div><div class="feedback"></div>
+    </article>
+
+    <article class="challenge" data-id="1.3" data-points="10" data-item="I">
+      <div class="points">+10</div><h3>Armor of Angles</h3>
+      <p>Simplify tan(x) · cot(x).</p><div class="reward">Reward: Insight</div>
+      <div class="answers">
+        <button class="choice" data-answer="wrong">tan²(x)</button>
+        <button class="choice" data-answer="correct">1</button>
+        <button class="choice" data-answer="wrong">sin(x)cos(x)</button>
+      </div>
+      <button class="action hintBtn">USE INSIGHT</button><div class="hint">tan and cot are reciprocals.</div><div class="feedback"></div>
+    </article>
+
+    <article class="challenge" data-id="1.4" data-points="10" data-item="R">
+      <div class="points">+10</div><h3>Lens of Symmetry</h3>
+      <p>Simplify cos(−x) sec(−x) tan(−x).</p><div class="reward">Reward: Reflection</div>
+      <div class="answers">
+        <button class="choice" data-answer="correct">−tan(x)</button>
+        <button class="choice" data-answer="wrong">tan(x)</button>
+        <button class="choice" data-answer="wrong">1</button>
+      </div>
+      <button class="action hintBtn">USE INSIGHT</button><div class="hint">cos and sec are even; tan is odd.</div><div class="feedback"></div>
+    </article>
+
+  </div>
+
+  <div class="final-gate" id="outerGate">
+    <div class="kicker">LOCATION TRIAL</div>
+    <h3>Open the Outer Gates</h3>
+    <p>Given x = Rcosθ and y = Rsinθ, explain why x² + y² = R² for every angle θ.</p>
+    <textarea class="proof" id="outerProof" placeholder="Substitute x and y, factor, and use the Pythagorean Identity..."></textarea>
+    <button class="action gateBtn" data-gate="outer">PRESENT PROOF</button>
+    <div class="feedback" id="outerFeedback"></div>
+  </div>
+</section>
+
+<section class="location" id="inner">
+  <div class="kicker">LOCATION 02</div>
+  <h2>The Inner Sanctum</h2>
+  <p>Now the maze tests sum/difference and angle identities.</p>
+  <div class="challenge-grid">
+
+    <article class="challenge" data-id="2.1" data-points="15" data-item="K">
+      <div class="points">+15</div><h3>Scroll of Sum</h3>
+      <p>Find the exact value of sin(13π/12).</p><div class="reward">Reward: Knowledge</div>
+      <div class="answers">
+        <button class="choice" data-answer="correct">(√2 − √6)/4</button>
+        <button class="choice" data-answer="wrong">(√6 + √2)/4</button>
+        <button class="choice" data-answer="wrong">(√6 − √2)/4</button>
+      </div>
+      <button class="action hintBtn">USE INSIGHT</button><div class="hint">13π/12 = π + π/12, and the angle is in Quadrant III.</div><div class="feedback"></div>
+    </article>
+
+    <article class="challenge" data-id="2.2" data-points="15" data-item="C">
+      <div class="points">+15</div><h3>Compass of Clarity</h3>
+      <p>Simplify sin(3π/4 − x).</p><div class="reward">Reward: Clarity</div>
+      <div class="answers">
+        <button class="choice" data-answer="correct">(√2/2)(cos x + sin x)</button>
+        <button class="choice" data-answer="wrong">(√2/2)(cos x − sin x)</button>
+        <button class="choice" data-answer="wrong">sin x + cos x</button>
+      </div>
+      <button class="action hintBtn">USE INSIGHT</button><div class="hint">Use sin(a−b)=sin a cos b−cos a sin b. Remember cos(3π/4) is negative.</div><div class="feedback"></div>
+    </article>
+
+    <article class="challenge" data-id="2.3" data-points="20" data-item="R">
+      <div class="points">+20</div><h3>Amulet of Transformation</h3>
+      <p>Simplify cos(x + π/2).</p><div class="reward">Reward: Reflection</div>
+      <div class="answers">
+        <button class="choice" data-answer="correct">−sin(x)</button>
+        <button class="choice" data-answer="wrong">sin(x)</button>
+        <button class="choice" data-answer="wrong">cos(x)</button>
+      </div>
+      <button class="action hintBtn">USE INSIGHT</button><div class="hint">Apply cos(a+b)=cos a cos b−sin a sin b.</div><div class="feedback"></div>
+    </article>
+
+    <article class="challenge" data-id="2.4" data-points="20" data-item="I">
+      <div class="points">+20</div><h3>Pendant of Double Angles</h3>
+      <p>Prove the double-angle relationship from the activity by transforming one side into the other.</p>
+      <div class="reward">Reward: Insight</div>
+      <textarea class="proof proofResponse" placeholder="Show your identity steps..."></textarea>
+      <button class="action proofCheck">SUBMIT PROOF</button>
+      <button class="action hintBtn">USE INSIGHT</button><div class="hint">Rewrite cot and tan using sine and cosine, combine the fractions, then look for cos²x−sin²x and 2sinx cosx.</div><div class="feedback"></div>
+    </article>
+
+  </div>
+
+  <div class="final-gate" id="innerGate">
+    <div class="kicker">LOCATION TRIAL</div>
+    <h3>Break the Sanctum's Defense</h3>
+    <p>Express cos(2θ) using only cos(θ), then explain what the expression tells you about the horizontal force when the angle doubles.</p>
+    <textarea class="proof" id="innerProof" placeholder="Use a double-angle identity..."></textarea>
+    <button class="action gateBtn" data-gate="inner">BREAK THE DEFENSE</button>
+    <div class="feedback" id="innerFeedback"></div>
+  </div>
+</section>
+
+<section class="location" id="heart">
+  <div class="kicker">LOCATION 03</div>
+  <h2>The Heart of the Labyrinth</h2>
+  <p>The highest-value challenges live here. Choose carefully.</p>
+  <div class="challenge-grid">
+
+    <article class="challenge" data-id="3.1" data-points="30" data-item="I">
+      <div class="points">+30</div><h3>Beast of Double Angles</h3>
+      <p>Prove cot(x) sin(2x) = 1 + cos(2x).</p><div class="reward">Reward: Insight</div>
+      <textarea class="proof proofResponse" placeholder="Transform the left side..."></textarea>
+      <button class="action proofCheck">SUBMIT PROOF</button>
+      <button class="action hintBtn">USE INSIGHT</button><div class="hint">Use cot x = cos x/sin x and sin 2x = 2sin x cos x.</div><div class="feedback"></div>
+    </article>
+
+    <article class="challenge" data-id="3.2" data-points="30" data-item="R">
+      <div class="points">+30</div><h3>Wheel of Truth</h3>
+      <p>For h(t)=20+15sin((π/10)t), identify amplitude, midline, and period.</p><div class="reward">Reward: Reflection</div>
+      <div class="answers">
+        <button class="choice" data-answer="correct">A=15, midline=20, period=20</button>
+        <button class="choice" data-answer="wrong">A=20, midline=15, period=10</button>
+        <button class="choice" data-answer="wrong">A=15, midline=20, period=10</button>
+      </div>
+      <button class="action hintBtn">USE INSIGHT</button><div class="hint">Period = 2π/B.</div><div class="feedback"></div>
+    </article>
+
+    <article class="challenge" data-id="3.3" data-points="35" data-item="C">
+      <div class="points">+35</div><h3>Chalice of Triple Angles</h3>
+      <p>Derive sin(3x)=3sin(x)−4sin³(x).</p><div class="reward">Reward: Clarity</div>
+      <textarea class="proof proofResponse" placeholder="Start with sin(2x+x)..."></textarea>
+      <button class="action proofCheck">SUBMIT DERIVATION</button>
+      <button class="action hintBtn">USE INSIGHT</button><div class="hint">Use sin(2x+x), then substitute sin2x and cos2x identities.</div><div class="feedback"></div>
+    </article>
+
+    <article class="challenge" data-id="3.4" data-points="35" data-item="K">
+      <div class="points">+35</div><h3>Ring of Secant and Cosecant</h3>
+      <p>Determine the period of f(x)=sec(x)+csc(x).</p><div class="reward">Reward: Knowledge</div>
+      <div class="answers">
+        <button class="choice" data-answer="wrong">π</button>
+        <button class="choice" data-answer="correct">2π</button>
+        <button class="choice" data-answer="wrong">4π</button>
+      </div>
+      <button class="action hintBtn">USE INSIGHT</button><div class="hint">Ask for the smallest shift that leaves both sec and csc unchanged simultaneously.</div><div class="feedback"></div>
+    </article>
+
+  </div>
+
+  <div class="hidden-challenge" id="hiddenChallenge">
+    <div class="kicker">SECRET CHAMBER UNLOCKED</div>
+    <h3>The Archivist's Bonus (+20 Aura)</h3>
+    <p>You collected all three Knowledge items. Which identity converts a sum of sines into a product?</p>
+    <div class="answers" id="bonusAnswers">
+      <button class="choice" data-answer="correct">Sum-to-Product</button>
+      <button class="choice" data-answer="wrong">Pythagorean</button>
+      <button class="choice" data-answer="wrong">Reciprocal</button>
+    </div>
+    <div class="feedback" id="bonusFeedback"></div>
+  </div>
+
+  <div class="final-gate" id="heartGate">
+    <div class="kicker">LOCATION TRIAL</div>
+    <h3>Claim the Heart Sigil</h3>
+    <p>Before approaching the final door, explain why higher-order identities can be built from simpler identities rather than memorized as isolated facts.</p>
+    <textarea class="proof" id="heartProof" placeholder="Connect sum identities, double-angle identities, and algebraic substitution..."></textarea>
+    <button class="action gateBtn" data-gate="heart">CLAIM HEART SIGIL</button>
+    <div class="feedback" id="heartFeedback"></div>
+  </div>
+</section>
+
+<section class="final-escape locked" id="escape">
+  <div class="kicker">FINAL DOOR</div>
+  <h2>The Beat-Frequency Lock</h2>
+  <p>Combine sin(10t) and sin(8t) using the Sum-to-Product Identity. The door responds to the beat pattern.</p>
+  <div class="gate-status">
+    <span class="sig" id="sigAura">80 Aura</span>
+    <span class="sig" id="sigOuter">Outer Sigil</span>
+    <span class="sig" id="sigInner">Inner Sigil</span>
+    <span class="sig" id="sigHeart">Heart Sigil</span>
+  </div>
+  <div class="beat-visual"><div class="wave-line"></div></div>
+  <p><strong>Step 1.</strong> Which product is equivalent to sin(10t)+sin(8t)?</p>
+  <div class="answers" id="escapeAnswers">
+    <button class="choice" data-answer="correct">2sin(9t)cos(t)</button>
+    <button class="choice" data-answer="wrong">2sin(t)cos(9t)</button>
+    <button class="choice" data-answer="wrong">sin(18t)cos(2t)</button>
+  </div>
+  <p><strong>Step 2.</strong> Enter the average angular frequency and difference/beat angular frequency.</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:520px">
+    <input id="avgFreq" type="number" placeholder="average frequency">
+    <input id="beatFreq" type="number" placeholder="beat frequency">
+  </div>
+  <button class="action" id="escapeBtn" style="margin-top:12px">UNLOCK THE FINAL DOOR</button>
+  <div class="feedback" id="escapeFeedback"></div>
+</section>
+
+<section class="reflection">
+  <div class="kicker">ADVENTURER'S REFLECTION</div>
+  <h2>How did you navigate the maze?</h2>
+  <p style="color:var(--muted)">Which challenges were most difficult? How did the items affect your strategy? What would you change about your approach?</p>
+  <textarea id="reflectionText" placeholder="Reflect on your choices and strategy..."></textarea>
+</section>
+
+</main>
+</section>
+</div>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+
+let aura=0;
+const completed=new Set();
+const items={C:0,K:0,I:0,R:0};
+const gates={outer:false,inner:false,heart:false};
+let bonusDone=false;
+let escapeChoiceCorrect=false;
+
+$("#startBtn").onclick=()=>$("#game").scrollIntoView({behavior:"smooth"});
+$$(".nav-btn").forEach(b=>b.onclick=()=>{
+  $$(".nav-btn").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active");
+  $("#"+b.dataset.target).scrollIntoView({behavior:"smooth",block:"start"});
+});
+
+function updateHUD(){
+  $("#auraTop").textContent=aura;
+  $("#knowledgeTop").textContent=Math.min(items.K,3);
+  $("#auraBar").style.width=Math.min(100,aura/80*100)+"%";
+  ["C","K","I","R"].forEach(k=>$("#inv"+k).classList.toggle("owned",items[k]>0));
+  if(items.K>=3) $("#hiddenChallenge").classList.add("show");
+
+  $("#sigAura").classList.toggle("done",aura>=80);
+  $("#sigOuter").classList.toggle("done",gates.outer);
+  $("#sigInner").classList.toggle("done",gates.inner);
+  $("#sigHeart").classList.toggle("done",gates.heart);
+
+  const unlocked=aura>=80&&gates.outer&&gates.inner&&gates.heart;
+  $("#escape").classList.toggle("locked",!unlocked);
+}
+function completeChallenge(card){
+  const id=card.dataset.id;
+  if(completed.has(id)) return;
+  completed.add(id);
+  aura+=+card.dataset.points;
+  items[card.dataset.item]++;
+  card.classList.add("completed");
+  card.querySelector(".feedback").textContent=`Solved! +${card.dataset.points} Aura. Item added to inventory.`;
+  updateHUD();
+}
+
+$$(".challenge .choice").forEach(btn=>btn.onclick=()=>{
+  const card=btn.closest(".challenge");
+  if(card.classList.contains("completed")) return;
+  card.querySelectorAll(".choice").forEach(x=>x.classList.remove("correct","wrong"));
+  const ok=btn.dataset.answer==="correct";
+  btn.classList.add(ok?"correct":"wrong");
+  if(ok) completeChallenge(card);
+  else card.querySelector(".feedback").textContent="The labyrinth rejects that answer. Recheck the identity.";
+});
+
+$$(".proofCheck").forEach(btn=>btn.onclick=()=>{
+  const card=btn.closest(".challenge"),txt=card.querySelector(".proofResponse").value.trim();
+  if(txt.length<70){
+    card.querySelector(".feedback").textContent="Show more of your reasoning before claiming the reward.";
+    return;
+  }
+  completeChallenge(card);
+});
+
+$$(".hintBtn").forEach(btn=>btn.onclick=()=>{
+  const card=btn.closest(".challenge");
+  if(items.I>0){
+    items.I--; card.querySelector(".hint").classList.add("show");
+    card.querySelector(".feedback").textContent="An Item of Insight dissolves into a clue.";
+    updateHUD();
+  }else{
+    card.querySelector(".feedback").textContent="You need an Item of Insight to reveal this clue.";
+  }
+});
+
+$$(".gateBtn").forEach(btn=>btn.onclick=()=>{
+  const g=btn.dataset.gate, field=$("#"+g+"Proof"), fb=$("#"+g+"Feedback"), text=field.value.trim();
+  if(text.length<90){
+    fb.textContent="The guardian wants a fuller mathematical explanation.";
+    return;
+  }
+  gates[g]=true; fb.textContent="Sigil earned. The passage opens."; updateHUD();
+});
+
+$("#bonusAnswers").querySelectorAll(".choice").forEach(btn=>btn.onclick=()=>{
+  if(bonusDone)return;
+  const ok=btn.dataset.answer==="correct";
+  btn.classList.add(ok?"correct":"wrong");
+  if(ok){
+    bonusDone=true;aura+=20;$("#bonusFeedback").textContent="Secret knowledge recovered! +20 Aura.";updateHUD();
+  }else $("#bonusFeedback").textContent="The archive remains sealed.";
+});
+
+$("#escapeAnswers").querySelectorAll(".choice").forEach(btn=>btn.onclick=()=>{
+  $("#escapeAnswers").querySelectorAll(".choice").forEach(x=>x.classList.remove("correct","wrong"));
+  escapeChoiceCorrect=btn.dataset.answer==="correct";
+  btn.classList.add(escapeChoiceCorrect?"correct":"wrong");
+});
+
+$("#escapeBtn").onclick=()=>{
+  if(!(aura>=80&&gates.outer&&gates.inner&&gates.heart)){
+    $("#escapeFeedback").textContent="The lock is dormant. You still need 80 Aura and all three sigils.";
+    return;
+  }
+  const avg=+$("#avgFreq").value,beat=+$("#beatFreq").value;
+  if(escapeChoiceCorrect && avg===9 && beat===1){
+    $("#escapeFeedback").textContent="THE DOOR OPENS. 2sin(9t)cos(t): average angular frequency 9, beat-envelope angular frequency 1. You escaped Trigonovia!";
+    $("#escape").style.boxShadow="0 0 50px rgba(185,239,114,.25)";
+  }else{
+    $("#escapeFeedback").textContent="The mechanism hums, but does not unlock. Check the average and half-difference frequencies.";
+  }
+});
+
+updateHUD();
+</script>
+</body>
+</html>
